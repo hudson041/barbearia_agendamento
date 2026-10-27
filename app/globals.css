@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/*
+  No Tailwind v4, os tokens de design (cores, fontes, etc) ficam aqui
+  dentro do @theme, em vez de em tailwind.config.ts. Isso gera
+  automaticamente as classes utilitárias: bg-paper, text-ink,
+  text-ink-soft, bg-brass, text-burgundy, text-moss, font-display, font-body.
+*/
+@theme {
+  --color-paper: #F2ECE1;
+  --color-ink: #14110F;
+  --color-ink-soft: #5C564C;
+  --color-brass: #B98B3E;
+  --color-burgundy: #6E2A2A;
+  --color-moss: #46603A;
+
+  --font-display: var(--font-display-raw), serif;
+  --font-body: var(--font-body-raw), sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+}
