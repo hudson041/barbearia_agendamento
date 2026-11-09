@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
+import Configuracoes from './Configuracoes';
 
 /* ========================================================================
    Tipos
@@ -229,6 +230,9 @@ function Agenda({ userId }: { userId: string }) {
   const [erro, setErro] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
   const [novoAberto, setNovoAberto] = useState(false);
+  const [configAberta, setConfigAberta] = useState(false);
+  // Sobe 1 a cada volta das configurações, para recarregar a lista de profissionais
+  const [versaoCadastros, setVersaoCadastros] = useState(0);
 
   // 1. Perfil do usuário logado (define a barbearia e o papel dele)
   useEffect(() => {
@@ -265,7 +269,7 @@ function Agenda({ userId }: { userId: string }) {
       .eq('ativo', true)
       .order('nome')
       .then(({ data }) => setBarbeiros(data ?? []));
-  }, [barbeariaId]);
+  }, [barbeariaId, versaoCadastros]);
 
   // 3. Agendamentos do dia escolhido
   const carregar = useCallback(async () => {
@@ -416,6 +420,23 @@ function Agenda({ userId }: { userId: string }) {
 
   const nomeBarbearia = perfil?.barbearias?.nome ?? 'Barbearia';
 
+  // Configurações: só o administrador (as regras do banco também exigem isso)
+  if (configAberta && barbeariaId && perfil?.role === 'admin') {
+    return (
+      <Configuracoes
+        barbeariaId={barbeariaId}
+        nomeBarbearia={nomeBarbearia}
+        onVoltar={() => {
+          setConfigAberta(false);
+          setVersaoCadastros((v) => v + 1);
+        }}
+        onNomeAlterado={(nome) =>
+          setPerfil((p) => (p && p.barbearias ? { ...p, barbearias: { ...p.barbearias, nome } } : p))
+        }
+      />
+    );
+  }
+
   return (
     <main className="min-h-screen bg-paper text-ink">
       <header className="sticky top-0 z-10 border-b border-ink/10 bg-paper px-4 py-3">
@@ -424,12 +445,22 @@ function Agenda({ userId }: { userId: string }) {
             <p className="font-body text-xs text-ink-soft">Painel</p>
             <h1 className="font-display text-2xl leading-tight">{nomeBarbearia}</h1>
           </div>
-          <button
-            onClick={sair}
-            className="font-body text-sm text-ink-soft underline underline-offset-4 min-h-11 px-2"
-          >
-            Sair
-          </button>
+          <div className="flex items-center gap-1">
+            {perfil?.role === 'admin' && (
+              <button
+                onClick={() => setConfigAberta(true)}
+                className="font-body text-sm text-ink-soft underline underline-offset-4 min-h-11 px-2"
+              >
+                Configurações
+              </button>
+            )}
+            <button
+              onClick={sair}
+              className="font-body text-sm text-ink-soft underline underline-offset-4 min-h-11 px-2"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
