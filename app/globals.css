@@ -21,3 +21,66 @@
 body {
   font-family: var(--font-body);
 }
+
+/* ==========================================================================
+   Movimento da página inicial
+   - .rise      : entrada suave (fade + subida) ao carregar a página
+   - .grow-x    : a barra dourada "se desenha" da esquerda para a direita
+   - .reveal    : o elemento surge conforme entra na tela durante a rolagem
+   - .timeline-line : cada trecho dourado da linha do tempo se desenha com a rolagem
+   Os efeitos de rolagem usam animation-timeline (CSS puro, sem JavaScript).
+   Em navegadores sem suporte, os elementos simplesmente aparecem prontos.
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(1.25rem); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes grow-x {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes grow-y {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+.rise {
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+.grow-x {
+  transform-origin: left;
+  animation: grow-x 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+.timeline-line {
+  transform-origin: top;
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 70%;
+  }
+  .timeline-line {
+    animation: grow-y linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rise,
+  .grow-x,
+  .reveal,
+  .timeline-line {
+    animation: none !important;
+  }
+}

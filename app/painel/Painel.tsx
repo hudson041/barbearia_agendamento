@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
 import Configuracoes from './Configuracoes';
+import Link from 'next/link';
 
 /* ========================================================================
    Tipos
@@ -211,6 +212,15 @@ function Login() {
           {enviando ? 'Entrando…' : 'Entrar'}
         </button>
       </form>
+
+      <div className="max-w-md mx-auto px-6 pb-8">
+        <Link
+          href="/"
+          className="font-body text-sm text-ink-soft underline underline-offset-4 min-h-11 inline-flex items-center"
+        >
+          ← Voltar ao início
+        </Link>
+      </div>
     </main>
   );
 }
@@ -672,7 +682,7 @@ function Agenda({ userId }: { userId: string }) {
           </ul>
         )}
 
-        <div className="text-center pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 pt-2">
           <button
             onClick={() => {
               setCarregando(true);
@@ -682,6 +692,17 @@ function Agenda({ userId }: { userId: string }) {
           >
             Atualizar agora
           </button>
+
+          {perfil?.barbearias?.slug && (
+            <Link
+              href={`/b/${perfil.barbearias.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-body text-xs text-ink-soft underline underline-offset-4 min-h-11 inline-flex items-center"
+            >
+              Ver página de agendamento
+            </Link>
+          )}
         </div>
       </div>
 

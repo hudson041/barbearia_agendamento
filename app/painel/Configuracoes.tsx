@@ -944,9 +944,19 @@ function DadosBarbearia({
         <div className="bg-ink/5 border border-ink/10 p-4 space-y-2">
           <p className={ROTULO}>Link de agendamento dos clientes</p>
           <p className="font-body text-sm break-all">{link}</p>
-          <button onClick={() => copiarLink(link)} className={BTN_SECUNDARIO}>
-            {copiado ? 'Link copiado' : 'Copiar link'}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => copiarLink(link)} className={BTN_SECUNDARIO}>
+              {copiado ? 'Link copiado' : 'Copiar link'}
+            </button>
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${BTN_SECUNDARIO} inline-flex items-center`}
+            >
+              Abrir página
+            </a>
+          </div>
         </div>
       )}
 
